@@ -92,7 +92,7 @@ class PomodoroTimer extends StatelessWidget {
             isMain ? const Color(0xFFE57373) : const Color(0xFFE8DCD1),
         foregroundColor: const Color(0xFF5D3B2E),
       ),
-      child: Icon(icon, size: 30.r),
+      child: Icon(icon, size: 50.r),
     );
   }
 }

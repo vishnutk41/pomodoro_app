@@ -5,16 +5,16 @@ class AppStyles {
   static TextStyle timerTextStyle({required bool isWorkTime}) {
     return TextStyle(
       color: isWorkTime ? const Color(0xFF5D3B2E) : const Color(0xFF00796B),
-      fontSize: 200.sp,
+      fontSize: 250.sp,
       fontWeight: FontWeight.bold,
-      height: 0.8, // Reduce the line height
+      height: 0.7.h, // Reduce the line height
     );
   }
 
   static TextStyle modeTextStyle({required bool isWorkTime}) {
     return TextStyle(
       color: isWorkTime ? const Color(0xFF5D3B2E) : const Color(0xFF00796B),
-      fontSize: 16.sp,
+      fontSize: 25.sp,
       fontWeight: FontWeight.bold,
     );
   }
