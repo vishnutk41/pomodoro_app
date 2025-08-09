@@ -14,25 +14,21 @@ class TimerProvider with ChangeNotifier {
   bool get isRunning => _isRunning;
   bool get isWorkTime => _isWorkTime;
 
-  void startTimer() {
-    if (_isRunning) return;
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingTime > 0) {
-        _remainingTime--;
-      } else {
-        _toggleWorkBreak();
-      }
-      notifyListeners();
-    });
-
-    _isRunning = true;
-    notifyListeners();
-  }
-
-  void stopTimer() {
-    _timer?.cancel();
-    _isRunning = false;
+  void toggleTimer() {
+    if (_isRunning) {
+      _timer?.cancel();
+      _isRunning = false;
+    } else {
+      _isRunning = true;
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (_remainingTime > 0) {
+          _remainingTime--;
+        } else {
+          _toggleWorkBreak();
+        }
+        notifyListeners();
+      });
+    }
     notifyListeners();
   }
 
@@ -41,14 +37,6 @@ class TimerProvider with ChangeNotifier {
     _remainingTime = workDuration;
     _isRunning = false;
     _isWorkTime = true;
-    notifyListeners();
-  }
-
-  void switchToBreak() {
-    _timer?.cancel();
-    _remainingTime = breakDuration;
-    _isRunning = false;
-    _isWorkTime = false;
     notifyListeners();
   }
 
@@ -63,6 +51,14 @@ class TimerProvider with ChangeNotifier {
   void _toggleWorkBreak() {
     _isWorkTime = !_isWorkTime;
     _remainingTime = _isWorkTime ? workDuration : breakDuration;
+    notifyListeners();
+  }
+
+  void switchToBreak() {
+    _timer?.cancel();
+    _remainingTime = breakDuration;
+    _isRunning = false;
+    _isWorkTime = false;
     notifyListeners();
   }
 }
