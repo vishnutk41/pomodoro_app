@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'theme_data.dart';
 
 class TimerProvider with ChangeNotifier {
   static const int workDuration = 25 * 60; // 25 minutes
@@ -15,6 +16,16 @@ class TimerProvider with ChangeNotifier {
   int get remainingTime => _remainingTime;
   bool get isRunning => _isRunning;
   bool get isWorkTime => _isWorkTime;
+
+  int _currentThemeIndex = 0;
+  AppTheme get currentTheme => AppThemeData.themes[_currentThemeIndex];
+
+  void setTheme(int index) {
+    if (index >= 0 && index < AppThemeData.themes.length) {
+      _currentThemeIndex = index;
+      notifyListeners();
+    }
+  }
 
   void toggleTimer() {
     if (_isRunning) {

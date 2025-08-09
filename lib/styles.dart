@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppStyles {
-  static TextStyle timerTextStyle({required bool isWorkTime}) {
+  static TextStyle timerTextStyle({required bool isWorkTime, required Color color}) {
     return TextStyle(
-      color: isWorkTime ? const Color(0xFF5D3B2E) : const Color(0xFF00796B),
-      fontSize: 250.sp,
+      color: color,
+      fontSize: 200.sp,
       fontWeight: FontWeight.bold,
-      height: 0.7.h, // Reduce the line height
+      height: 0.8,
     );
   }
 
-  static TextStyle modeTextStyle({required bool isWorkTime}) {
+  static TextStyle modeTextStyle({required bool isWorkTime, required Color color}) {
     return TextStyle(
-      color: isWorkTime ? const Color(0xFF5D3B2E) : const Color(0xFF00796B),
-      fontSize: 25.sp,
+      color: color,
+      fontSize: 20.sp,
       fontWeight: FontWeight.bold,
     );
   }
