@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'timer_provider.dart';
+import 'styles.dart';
 
 class PomodoroTimer extends StatelessWidget {
   const PomodoroTimer({super.key});
@@ -19,63 +20,39 @@ class PomodoroTimer extends StatelessWidget {
     final timerProvider = Provider.of<TimerProvider>(context);
 
     return Scaffold(
-      backgroundColor:
-          timerProvider.isWorkTime
-              ? const Color(0xFFF4EDE4)
-              : const Color(0xFFE0F7FA),
+      backgroundColor: timerProvider.isWorkTime
+          ? const Color(0xFFF4EDE4)
+          : const Color(0xFFE0F7FA),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Container(
               padding: EdgeInsets.all(8.0.r),
               decoration: BoxDecoration(
-                color:
-                    timerProvider.isWorkTime
-                        ? const Color(0xFFE8DCD1)
-                        : const Color(0xFFB2EBF2),
+                color: timerProvider.isWorkTime
+                    ? const Color(0xFFE8DCD1)
+                    : const Color(0xFFB2EBF2),
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
                 timerProvider.isWorkTime ? '🧠 Focus' : '☕ Short Break',
-                style: TextStyle(
-                  color:
-                      timerProvider.isWorkTime
-                          ? const Color(0xFF5D3B2E)
-                          : const Color(0xFF00796B),
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppStyles.modeTextStyle(isWorkTime: timerProvider.isWorkTime),
               ),
             ),
-            SizedBox(height: 40.h),
             Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   _formatMinutes(timerProvider.remainingTime),
-                  style: TextStyle(
-                    color:
-                        timerProvider.isWorkTime
-                            ? const Color(0xFF5D3B2E)
-                            : const Color(0xFF00796B),
-                    fontSize: 120.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppStyles.timerTextStyle(isWorkTime: timerProvider.isWorkTime),
                 ),
                 Text(
                   _formatSeconds(timerProvider.remainingTime),
-                  style: TextStyle(
-                    color:
-                        timerProvider.isWorkTime
-                            ? const Color(0xFF5D3B2E)
-                            : const Color(0xFF00796B),
-                    fontSize: 120.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppStyles.timerTextStyle(isWorkTime: timerProvider.isWorkTime),
                 ),
               ],
             ),
-            SizedBox(height: 40.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
