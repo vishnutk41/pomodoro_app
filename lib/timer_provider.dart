@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 
 class TimerProvider with ChangeNotifier {
   static const int workDuration = 25 * 60; // 25 minutes
@@ -9,6 +10,7 @@ class TimerProvider with ChangeNotifier {
   bool _isRunning = false;
   bool _isWorkTime = true;
   Timer? _timer;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   int get remainingTime => _remainingTime;
   bool get isRunning => _isRunning;
@@ -16,49 +18,66 @@ class TimerProvider with ChangeNotifier {
 
   void toggleTimer() {
     if (_isRunning) {
-      _timer?.cancel();
-      _isRunning = false;
+      stopTimer();
     } else {
-      _isRunning = true;
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (_remainingTime > 0) {
-          _remainingTime--;
-        } else {
-          _toggleWorkBreak();
-        }
-        notifyListeners();
-      });
+      startTimer();
     }
-    notifyListeners();
   }
 
   void resetTimer() {
-    _timer?.cancel();
-    _remainingTime = workDuration;
-    _isRunning = false;
-    _isWorkTime = true;
-    notifyListeners();
-  }
-
-  void switchToWork() {
-    _timer?.cancel();
-    _remainingTime = workDuration;
-    _isRunning = false;
-    _isWorkTime = true;
-    notifyListeners();
-  }
-
-  void _toggleWorkBreak() {
-    _isWorkTime = !_isWorkTime;
+    stopTimer();
     _remainingTime = _isWorkTime ? workDuration : breakDuration;
     notifyListeners();
   }
 
-  void switchToBreak() {
-    _timer?.cancel();
-    _remainingTime = breakDuration;
-    _isRunning = false;
-    _isWorkTime = false;
+  void switchToWork() {
+    stopTimer();
+    _isWorkTime = true;
+    _remainingTime = workDuration;
     notifyListeners();
+  }
+
+  void switchToBreak() {
+    stopTimer();
+    _isWorkTime = false;
+    _remainingTime = breakDuration;
+    notifyListeners();
+  }
+
+  void startTimer() {
+    if (!_isRunning) {
+      _isRunning = true;
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+      notifyListeners();
+    }
+  }
+
+  void _tick() {
+    if (_remainingTime > 0) {
+      _remainingTime--;
+      if (_remainingTime == 30) {
+        _playAudio();
+      }
+      notifyListeners();
+    } else {
+      stopTimer();
+    }
+  }
+
+  void stopTimer() {
+    _isRunning = false;
+    _timer?.cancel();
+    notifyListeners();
+  }
+
+  Future<void> _playAudio() async {
+    await _audioPlayer.play(AssetSource('audio/timer_over.mp3'));
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _audioPlayer.dispose();
+    super.dispose();
   }
 }
