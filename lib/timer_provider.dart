@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'theme_data.dart';
 
 class TimerProvider with ChangeNotifier {
@@ -20,9 +21,31 @@ class TimerProvider with ChangeNotifier {
   int _currentThemeIndex = 0;
   AppTheme get currentTheme => AppThemeData.themes[_currentThemeIndex];
 
-  void setTheme(int index) {
+  TimerProvider() {
+    _loadTheme();
+  }
+
+  Future<void> _loadTheme() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _currentThemeIndex = prefs.getInt('themeIndex') ?? 0;
+      notifyListeners();
+    } catch (e) {
+      print('Error loading theme: $e');
+      // Set a default theme if there's an error
+      _currentThemeIndex = 0;
+    }
+  }
+
+  Future<void> setTheme(int index) async {
     if (index >= 0 && index < AppThemeData.themes.length) {
       _currentThemeIndex = index;
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('themeIndex', index);
+      } catch (e) {
+        print('Error saving theme: $e');
+      }
       notifyListeners();
     }
   }

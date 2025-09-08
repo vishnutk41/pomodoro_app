@@ -18,101 +18,115 @@ class PomodoroTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = Provider.of<TimerProvider>(context);
-    final theme = timerProvider.currentTheme;
-
-    return Scaffold(
-      backgroundColor: timerProvider.isWorkTime
-          ? theme.workBackgroundColor
-          : theme.breakBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: timerProvider.isWorkTime
-            ? theme.workBackgroundColor
-            : theme.breakBackgroundColor,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () => _showThemeSelector(context, timerProvider),
-            icon: Icon(
-              Icons.settings,
-              color: timerProvider.isWorkTime
-                  ? theme.workTimerColor
-                  : theme.breakTimerColor,
-            ),
-          )
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(8.0.r),
-              decoration: BoxDecoration(
-                color: timerProvider.isWorkTime
-                    ? theme.workBackgroundColor.withOpacity(0.8)
-                    : theme.breakBackgroundColor.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Text(
-                timerProvider.isWorkTime ? '🧠 Focus' : '☕ Short Break',
-                style: AppStyles.modeTextStyle(
-                  isWorkTime: timerProvider.isWorkTime,
-                  color: timerProvider.isWorkTime
-                      ? theme.workTimerColor
-                      : theme.breakTimerColor,
+    return Consumer<TimerProvider>(
+      builder: (context, timerProvider, _) {
+        final theme = timerProvider.currentTheme;
+        return Scaffold(
+          backgroundColor:
+              timerProvider.isWorkTime
+                  ? theme.workBackgroundColor
+                  : theme.breakBackgroundColor,
+          appBar: AppBar(
+            backgroundColor:
+                timerProvider.isWorkTime
+                    ? theme.workBackgroundColor
+                    : theme.breakBackgroundColor,
+            elevation: 0,
+            actions: [
+              IconButton(
+                onPressed: () => _showThemeSelector(context, timerProvider),
+                icon: Icon(
+                  Icons.settings,
+                  color:
+                      timerProvider.isWorkTime
+                          ? theme.workTimerColor
+                          : theme.breakTimerColor,
                 ),
               ),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _formatMinutes(timerProvider.remainingTime),
-                  style: AppStyles.timerTextStyle(
-                    isWorkTime: timerProvider.isWorkTime,
-                    color: timerProvider.isWorkTime
-                        ? theme.workTimerColor
-                        : theme.breakTimerColor,
-                  ),
-                ),
-                Text(
-                  _formatSeconds(timerProvider.remainingTime),
-                  style: AppStyles.timerTextStyle(
-                    isWorkTime: timerProvider.isWorkTime,
-                    color: timerProvider.isWorkTime
-                        ? theme.workTimerColor
-                        : theme.breakTimerColor,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            ],
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _buildControlButton(Icons.refresh, timerProvider.resetTimer, theme, timerProvider.isWorkTime),
-                SizedBox(width: 20.w),
-                _buildControlButton(
-                  timerProvider.isRunning ? Icons.pause : Icons.play_arrow,
-                  timerProvider.toggleTimer,
-                  theme,
-                  timerProvider.isWorkTime,
-                  isMain: true,
+                Container(
+                  padding: EdgeInsets.all(8.0.r),
+                  decoration: BoxDecoration(
+                    color:
+                        timerProvider.isWorkTime
+                            ? theme.workBackgroundColor.withOpacity(0.8)
+                            : theme.breakBackgroundColor.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text(
+                    timerProvider.isWorkTime ? '🧠 Focus' : '☕ Short Break',
+                    style: AppStyles.modeTextStyle(
+                      isWorkTime: timerProvider.isWorkTime,
+                      color:
+                          timerProvider.isWorkTime
+                              ? theme.workTimerColor
+                              : theme.breakTimerColor,
+                    ),
+                  ),
                 ),
-                SizedBox(width: 20.w),
-                _buildControlButton(
-                  Icons.skip_next,
-                  timerProvider.isWorkTime
-                      ? timerProvider.switchToBreak
-                      : timerProvider.switchToWork,
-                  theme,
-                  timerProvider.isWorkTime,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _formatMinutes(timerProvider.remainingTime),
+                      style: AppStyles.timerTextStyle(
+                        isWorkTime: timerProvider.isWorkTime,
+                        color:
+                            timerProvider.isWorkTime
+                                ? theme.workTimerColor
+                                : theme.breakTimerColor,
+                      ),
+                    ),
+                    Text(
+                      _formatSeconds(timerProvider.remainingTime),
+                      style: AppStyles.timerTextStyle(
+                        isWorkTime: timerProvider.isWorkTime,
+                        color:
+                            timerProvider.isWorkTime
+                                ? theme.workTimerColor
+                                : theme.breakTimerColor,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _buildControlButton(
+                      Icons.refresh,
+                      timerProvider.resetTimer,
+                      theme,
+                      timerProvider.isWorkTime,
+                    ),
+                    SizedBox(width: 20.w),
+                    _buildControlButton(
+                      timerProvider.isRunning ? Icons.pause : Icons.play_arrow,
+                      timerProvider.toggleTimer,
+                      theme,
+                      timerProvider.isWorkTime,
+                      isMain: true,
+                    ),
+                    SizedBox(width: 20.w),
+                    _buildControlButton(
+                      Icons.skip_next,
+                      timerProvider.isWorkTime
+                          ? timerProvider.switchToBreak
+                          : timerProvider.switchToWork,
+                      theme,
+                      timerProvider.isWorkTime,
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -128,10 +142,15 @@ class PomodoroTimer extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         shape: const CircleBorder(),
         padding: EdgeInsets.all(20.r),
-        backgroundColor: isMain
-            ? theme.buttonColor
-            : (isWorkTime ? theme.workBackgroundColor : theme.breakBackgroundColor).withOpacity(0.8),
-        foregroundColor: isWorkTime ? theme.workTimerColor : theme.breakTimerColor,
+        backgroundColor:
+            isMain
+                ? theme.buttonColor
+                : (isWorkTime
+                        ? theme.workBackgroundColor
+                        : theme.breakBackgroundColor)
+                    .withOpacity(0.8),
+        foregroundColor:
+            isWorkTime ? theme.workTimerColor : theme.breakTimerColor,
       ),
       child: Icon(icon, size: 30.r),
     );
@@ -142,7 +161,11 @@ class PomodoroTimer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Theme'),
+          backgroundColor: Colors.grey[100],
+          title: const Text(
+            'Select Theme',
+            style: TextStyle(color: Colors.black),
+          ),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
@@ -154,14 +177,24 @@ class PomodoroTimer extends StatelessWidget {
                   leading: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircleAvatar(backgroundColor: theme.workBackgroundColor),
+                      Container(
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: CircleAvatar(
+                          backgroundColor: theme.workBackgroundColor,
+                        ),
+                      ),
                       SizedBox(width: 5),
-                      CircleAvatar(backgroundColor: theme.breakBackgroundColor),
+                      Container(
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: CircleAvatar(
+                          backgroundColor: theme.breakBackgroundColor,
+                        ),
+                      ),
                     ],
                   ),
                   title: Text('Theme ${index + 1}'),
-                  onTap: () {
-                    timerProvider.setTheme(index);
+                  onTap: () async {
+                    await timerProvider.setTheme(index);
                     Navigator.of(context).pop();
                   },
                 );
